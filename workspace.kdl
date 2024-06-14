@@ -1,0 +1,11 @@
+layout {
+    pane size=1 borderless=true {
+        plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+        pane edit="src/main.rs"
+        pane size="10%" command="bash" name="compiler" {
+            args "-c" "cargo build && zellij action start-or-reload-plugin file:target/wasm32-wasi/debug/markdev.wasm"
+        }
+    }
+}
