@@ -65,16 +65,16 @@ impl ZellijPlugin for Plugin {
             UiState::InquiringPath => {
                 todo!("handle keypress");
                 true
-            },
+            }
             UiState::InputConfirmed => {
                 todo!("create the app");
                 // this is blocking further execution because it's gonna be watching files
                 true
-            },
+            }
             UiState::AppCreated => {
                 todo!("main app logic");
                 false
-            },
+            }
         }
     }
 
@@ -94,4 +94,3 @@ impl Ui {
         }
     }
 }
-

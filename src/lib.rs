@@ -32,7 +32,11 @@ impl App {
             None => Vec::new(),
         };
 
-        Ok(Self { vault, workspaces, active_workspace_id: 0 })
+        Ok(Self {
+            vault,
+            workspaces,
+            active_workspace_id: 0,
+        })
     }
 
     /// Updates the state by scanning the vault and editing the workspaces if needed
@@ -47,7 +51,7 @@ impl Workspace {
         match tab {
             obsidian::Tab::File(file) => {
                 todo!("read frontmatter");
-            },
+            }
             obsidian::Tab::Plugin => None,
         }
     }
@@ -66,4 +70,3 @@ impl From<ObsidianError> for AppError {
         }
     }
 }
-
