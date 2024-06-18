@@ -14,6 +14,10 @@ impl Vault {
     pub fn get_focused_tab(&self) -> Result<&Tab, ObsidianError> {
         todo!();
     }
+
+    pub fn update(&mut self) {
+        todo!();
+    }
 }
 
 pub struct TabGroup {
@@ -23,7 +27,7 @@ pub struct TabGroup {
 }
 
 pub enum Tab {
-    File,
+    File(File),
     Plugin,
 }
 
