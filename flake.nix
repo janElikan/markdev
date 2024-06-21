@@ -11,26 +11,15 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        toolchain = with fenix.packages.${system}; combine [
-          minimal.rustc
-          minimal.cargo
-          targets.wasm32-wasi.latest.rust-std
-        ];
-
-        naersk-lib = pkgs.callPackage naersk {
-          cargo = toolchain;
-          rustc = toolchain;
-        };
+        naersk-lib = pkgs.callPackage naersk { };
       in
       {
         defaultPackage = naersk-lib.buildPackage {
             src = ./.;
-            CARGO_BUILD_TARGET = "wasm32-wasi";
         };
         devShell = with pkgs; mkShell {
-          buildInputs = [ toolchain rustfmt rustPackages.clippy bacon ];
+          buildInputs = [ cargo rustc rustfmt rustPackages.clippy bacon rust-analyzer ];
           RUST_SRC_PATH = rustPlatform.rustLibSrc;
-          CARGO_BUILD_TARGET = "wasm32-wasi";
         };
       }
     );
