@@ -1,72 +1,33 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::path::PathBuf;
 
-use obsidian::ObsidianError;
+use obsidian::{Tab, Vault};
 
 mod obsidian;
 
-pub struct App {
-    vault: obsidian::Vault,
+pub fn run(vault_path: PathBuf) {
+    let vault = Vault::new(vault_path).expect("Failed to open vault");
+    let tab = vault.current_tab().expect("No open tab");
+    let file = match tab {
+        Tab::File(file) => file,
+        Tab::Plugin => panic!("The open tab is not a file"),
+    };
 
-    pub workspaces: Vec<Workspace>,
-    pub active_workspace_id: usize,
+    let workspace = Workspace::from(tab);
 }
 
 pub struct Workspace {
-    id: usize,
-    working_directory: PathBuf,
-    branch: String,
-    processes: Vec<Process>,
+    path: PathBuf,
+    branch: Option<String>,
+    edit: Option<PathBuf>,
+    procs: Vec<Process>,
 }
 
-pub struct Process {
-    pub command: String,
-    pub environment: HashMap<String, String>,
+struct Process {
+    command: String,
 }
 
-impl App {
-    pub fn new(path_to_vault: PathBuf) -> Result<Self, AppError> {
-        let vault = obsidian::Vault::new(path_to_vault)?;
-        let tab = vault.get_focused_tab()?;
-        let workspaces = match Workspace::from(tab, 0) {
-            Some(workspace) => vec![workspace],
-            None => Vec::new(),
-        };
-
-        Ok(Self {
-            vault,
-            workspaces,
-            active_workspace_id: 0,
-        })
-    }
-
-    /// Updates the state by scanning the vault and editing the workspaces if needed
-    pub fn update(&mut self) {
+impl From<&Tab> for Workspace {
+    fn from(value: &Tab) -> Self {
         todo!()
-    }
-}
-
-impl Workspace {
-    /// Returns `None` if the tab is a plugin or does not contain markdev metadata
-    pub fn from(tab: &obsidian::Tab, workspace_id: usize) -> Option<Self> {
-        match tab {
-            obsidian::Tab::File(file) => {
-                todo!("read frontmatter");
-            }
-            obsidian::Tab::Plugin => None,
-        }
-    }
-}
-
-pub enum AppError {
-    InvalidVaultPath,
-    ObsidianBug,
-}
-
-impl From<ObsidianError> for AppError {
-    fn from(value: ObsidianError) -> Self {
-        match value {
-            ObsidianError::InvalidPath => AppError::InvalidVaultPath,
-            ObsidianError::InvalidTabId => AppError::ObsidianBug,
-        }
     }
 }
