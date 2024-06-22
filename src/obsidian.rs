@@ -14,22 +14,38 @@ impl Vault {
         path.push(PathBuf::from_str(".obsidian/workspace.json").unwrap());
         dbg!(&path);
 
-        let workspace_file = fs::File::open(path)?;
+        let workspace_file = fs::File::open(&path)?;
         let nodes: Value = serde_json::from_reader(workspace_file)?;
-        dbg!(nodes);
+        dbg!(&nodes);
 
-        todo!();
+        let tab_groups = get_tab_groups(&nodes);
+        let focused_group = nodes.get("active").unwrap().to_string();
+
+        Ok(Self {
+            path,
+            tab_groups,
+            focused_group,
+        })
     }
 
     pub fn current_tab(&self) -> Option<&Tab> {
-        todo!();
+        let focused_tab_group = self
+            .tab_groups
+            .iter()
+            .find(|group| group.id == self.focused_group)?;
+
+        focused_tab_group.tabs.get(focused_tab_group.active_tab)
     }
 }
 
+fn get_tab_groups(raw_data: &Value) -> Vec<TabGroup> {
+    todo!()
+}
+
 struct TabGroup {
-    id: String,
-    tabs: Vec<Tab>,
-    active_tab: usize,
+    pub id: String,
+    pub tabs: Vec<Tab>,
+    pub active_tab: usize,
 }
 
 pub enum Tab {
